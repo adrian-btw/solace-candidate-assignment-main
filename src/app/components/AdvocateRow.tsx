@@ -1,4 +1,5 @@
 import { Advocate } from "../types/advocate"
+import { AdvocateSpecialtiesCell } from "./AdvocateSpecialtiesCell"
 import { Badge } from "./common/Badge"
 
 export interface AdvocateRowProps {
@@ -12,11 +13,7 @@ export const AdvocateRow = ({ advocate }: AdvocateRowProps) => {
             <td>{advocate.lastName}</td>
             <td>{advocate.city}</td>
             <td>{advocate.degree}</td>
-            <td className="flex flex-wrap gap-2">
-                {advocate.specialties.map((s, i) => (
-                    <Badge key={i} content={s} />
-                ))}
-            </td>
+            <td><AdvocateSpecialtiesCell specialties={advocate.specialties} maxDisplayed={5} /></td>
             <td>{advocate.yearsOfExperience}</td>
             <td>{advocate.phoneNumber}</td></>
     )
