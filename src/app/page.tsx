@@ -3,6 +3,8 @@
 import { ChangeEvent, useMemo, useState } from "react";
 import { useAdvocates } from "./hooks/useAdvocates";
 import { filterAdvocates } from "./utils/filterAdvocates";
+import { AdvocateRow } from "./components/AdvocateRow";
+import { AdvocateHeaderRow } from "./components/AdvocateHeaderRow";
 
 export default function Home() {
   const advocates = useAdvocates();
@@ -35,30 +37,14 @@ export default function Home() {
       <table>
         <thead>
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
+            <AdvocateHeaderRow />
           </tr>
         </thead>
         <tbody>
           {filteredAdvocates.map((advocate, i) => {
             return (
               <tr key={i}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s, j) => (
-                    <div key={j}>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
+                <AdvocateRow advocate={advocate} />
               </tr>
             );
           })}
