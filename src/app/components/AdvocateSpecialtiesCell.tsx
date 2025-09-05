@@ -6,10 +6,12 @@ export interface AdvocateSpecialtiesCellProps {
 }
 
 export const AdvocateSpecialtiesCell = ({ specialties, maxDisplayed }: AdvocateSpecialtiesCellProps) => {
-    const numSpecialties = specialties.length;
+    const dedupedSpecialties = Array.from(new Set(specialties))
+
+    const numSpecialties = dedupedSpecialties.length;
     if (maxDisplayed !== undefined && maxDisplayed < numSpecialties) {
         return <div className="flex flex-wrap gap-2">
-            {specialties.slice(0, maxDisplayed).map((s, i) => (
+            {dedupedSpecialties.slice(0, maxDisplayed).map((s, i) => (
                 <Badge key={i} content={s} truncate />
             ))}
             <Badge content={`+ ${numSpecialties - maxDisplayed} more`} />

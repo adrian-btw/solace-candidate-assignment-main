@@ -15,6 +15,7 @@ export const AdvocateRow = ({ advocate }: AdvocateRowProps) => {
             <td>{advocate.degree}</td>
             <td><AdvocateSpecialtiesCell specialties={advocate.specialties} maxDisplayed={5} /></td>
             <td>{advocate.yearsOfExperience}</td>
-            <td>{advocate.phoneNumber}</td></>
+            <td>{advocate.phoneNumber}</td>
+        </>
     )
 }

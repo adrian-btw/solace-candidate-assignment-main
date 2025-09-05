@@ -34,7 +34,7 @@ export default function Home() {
       </div>
       <br />
       <br />
-      <table>
+      <table className="my-table">
         <thead>
           <tr>
             <AdvocateHeaderRow />

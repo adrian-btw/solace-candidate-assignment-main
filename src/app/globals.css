@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.my-table td,
+.my-table th {
+  padding: 48px 0;
+}
+
+/* First row: remove top padding */
+.my-table tr:first-child td,
+.my-table tr:first-child th {
+  padding-top: 0;
+}
+
+/* Last row: remove bottom padding */
+.my-table tr:last-child td,
+.my-table tr:last-child th {
+  padding-bottom: 0;
+}
+
+/* Stripe every other row */
+.my-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* light gray */
+}
