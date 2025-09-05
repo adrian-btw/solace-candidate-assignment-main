@@ -11,7 +11,9 @@ import { Panel } from "./components/common/Panel";
 import { Page } from "./components/common/Page";
 
 export default function Home() {
-  const advocates = useAdvocates();
+  const [pageNum, setPageNum] = useState(0);
+  const pageSize = 10;
+  const { advocates, hasMore, loading } = useAdvocates(pageNum, pageSize);
   const [searchTerm, setSearchTerm] = useState('');
   const filteredAdvocates = useMemo(() => filterAdvocates(advocates, searchTerm), [advocates, searchTerm])
 
@@ -21,6 +23,14 @@ export default function Home() {
 
   const onResetSearch = () => {
     setSearchTerm("");
+  };
+
+  const onPrevPage = () => {
+    setPageNum((p) => Math.max(0, p - 1));
+  };
+
+  const onNextPage = () => {
+    if (hasMore) setPageNum((p) => p + 1);
   };
 
   return (
@@ -43,23 +53,43 @@ export default function Home() {
             Reset Search
           </Button>
         </Panel>
+        <div className="flex items-center justify-end gap-2 pb-2">
+          <Button
+            variant="accent"
+            onClick={onPrevPage}
+            disabled={pageNum === 0 || loading}
+            type="button"
+            aria-label="Previous page"
+          >
+            {"<"}
+          </Button>
+          <Button
+            variant="accent"
+            onClick={onNextPage}
+            disabled={!hasMore || loading}
+            type="button"
+            aria-label="Next page"
+          >
+            {">"}
+          </Button>
+        </div>
         <Panel id="panel">
           <div className="-m-4 sm:-m-6 md:-m-8">
             <table className="my-table w-full">
-            <thead>
-              <tr>
-                <AdvocateHeaderRow />
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAdvocates.map((advocate, i) => {
-                return (
-                  <tr key={i}>
-                    <AdvocateRow advocate={advocate} />
-                  </tr>
-                );
-              })}
-            </tbody>
+              <thead>
+                <tr>
+                  <AdvocateHeaderRow />
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAdvocates.map((advocate, i) => {
+                  return (
+                    <tr key={i}>
+                      <AdvocateRow advocate={advocate} />
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </Panel>
