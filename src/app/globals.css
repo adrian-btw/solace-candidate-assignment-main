@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+main {
+  margin: 0 !important;
+}
+
+.site-header {
+  background-color: #265b4e;
+  padding: 40px;
+  color: white;
+}
+
+.my-table td,
+.my-table th {
+  padding: 48px 8px;
+}
+
+/* Table header styling */
+.my-table thead th {
+  background-color: #265b4e; /* dark green */
+  color: #ffffff; /* light text */
+  padding: 12px 12px; /* tighter padding for header */
+  text-align: left;
+}
+
+/* Stripe every other body row */
+.my-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* light gray */
+}

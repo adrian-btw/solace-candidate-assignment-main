@@ -1,91 +1,99 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
+import { useAdvocates } from "./hooks/useAdvocates";
+import { filterAdvocates } from "./utils/filterAdvocates";
+import { AdvocateRow } from "./components/AdvocateRow";
+import { AdvocateHeaderRow } from "./components/AdvocateHeaderRow";
+import { Button } from "./components/common/Button";
+import { Input } from "./components/common/Input";
+import { Panel } from "./components/common/Panel";
+import { Page } from "./components/common/Page";
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
+  const pageSize = 10;
+  const { advocates, hasMore, loading } = useAdvocates(pageNum, pageSize);
+  const [searchTerm, setSearchTerm] = useState('');
+  const filteredAdvocates = useMemo(() => filterAdvocates(advocates, searchTerm), [advocates, searchTerm])
 
-  useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
-  }, []);
-
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const onResetSearch = () => {
+    setSearchTerm("");
+  };
+
+  const onPrevPage = () => {
+    setPageNum((p) => Math.max(0, p - 1));
+  };
+
+  const onNextPage = () => {
+    if (hasMore) setPageNum((p) => p + 1);
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <main>
+      <h1 className="site-header">Solace Advocates</h1>
+      <Page className="space-y-6">
+        <Panel className="flex flex-wrap items-center gap-3">
+          <label htmlFor="search" className="text-sm font-medium text-gray-700 whitespace-nowrap">
+            Search for advocates
+          </label>
+          <Input
+            id="search"
+            value={searchTerm}
+            onChange={onChangeSearch}
+            placeholder="Search advocates..."
+            aria-label="Search for advocates"
+            className="max-w-xs"
+          />
+          <Button variant="secondary" onClick={onResetSearch} type="button">
+            Reset Search
+          </Button>
+        </Panel>
+        <div className="flex items-center justify-end gap-2 pb-2">
+          <Button
+            variant="accent"
+            onClick={onPrevPage}
+            disabled={pageNum === 0 || loading}
+            type="button"
+            aria-label="Previous page"
+          >
+            {"<"}
+          </Button>
+          <Button
+            variant="accent"
+            onClick={onNextPage}
+            disabled={!hasMore || loading}
+            type="button"
+            aria-label="Next page"
+          >
+            {">"}
+          </Button>
+        </div>
+        <Panel id="panel">
+          <div className="-m-4 sm:-m-6 md:-m-8">
+            <table className="my-table w-full">
+              <thead>
+                <tr>
+                  <AdvocateHeaderRow />
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAdvocates.map((advocate, i) => {
+                  return (
+                    <tr key={i}>
+                      <AdvocateRow advocate={advocate} />
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      </Page>
     </main>
   );
 }
