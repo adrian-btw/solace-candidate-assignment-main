@@ -1,6 +1,7 @@
 import { Advocate } from "../types/advocate"
 import { AdvocateSpecialtiesCell } from "./AdvocateSpecialtiesCell"
 import { Badge } from "./common/Badge"
+import { PhoneNumber } from "./common/PhoneNumber"
 
 export interface AdvocateRowProps {
     advocate: Advocate
@@ -15,7 +16,7 @@ export const AdvocateRow = ({ advocate }: AdvocateRowProps) => {
             <td>{advocate.degree}</td>
             <td><AdvocateSpecialtiesCell specialties={advocate.specialties} maxDisplayed={5} /></td>
             <td>{advocate.yearsOfExperience}</td>
-            <td>{advocate.phoneNumber}</td>
+            <td><PhoneNumber number={advocate.phoneNumber} /></td>
         </>
     )
 }
